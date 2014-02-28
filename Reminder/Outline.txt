@@ -1,0 +1,36 @@
+config.yml 
+These are the default settings used when adding a reminder if they are not specified in the add. 
+tag: 'text'                    Default tag to be added to reminder 
+login_cooldown: seconds        Default number of seconds after login to send message. 
+frequency: seconds             Default number of seconds between each message. 
+resend: count                  Default maximum number of times to send a given message. 0 is finished. -1 to ignore max 
+prefix: 'text'                 Title of the reminder message, ie. '&e[Reminder]&2' 
+
+
+Table 
+[id] [player] [message] [activate] [tag] [cooldown] [frequency] [count] 
+
+Commands 
+/reminder help 
+        Display commands and usage 
+/reminder add <player> '<message>' delay <seconds>|activate <yyyy-mm-dd HH:MM> [tag '<tag>'] [cooldown <seconds>] [frequency <seconds>] [count <count>] 
+        Add a reminder. 
+/reminder list [player <player>] [tag '<text>'] 
+        List all reminders or reminders for a player and or tag 
+/reminder delete [<id>]|[[player <player>] [tag '<text>']] 
+        Delete a reminder by id or by player and/or tag 
+/reminder update <id> [player <player>] [message '<message>'] [delay <seconds>|activate <yyyy-mm-dd HH:MM>] [tag '<text>'] [cooldown <seconds>] [frequency <seconds>] [count <seconds>] 
+        Update a reminder referenced by id
+/reminder setdefault [cooldown <seconds>] [frequency <seconds>] [count <count>] [tag '<text>'] [prefix '<text>'] 
+        Sets the default for the given setting, saves it in settings.yml and activates the setting immediately. 
+/reminder reload 
+        Reload settings.yml 
+/reminder stop 
+        Stop all reminders. 
+/reminder resume 
+        Resume all reminders. 
+/reminder time
+		Server time
+
+Notes:
+	Each line can contain 53 characters.

@@ -1,27 +1,40 @@
 package io.github.chrisbotcom.reminder;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Reminder extends JavaPlugin {
+	private Config config;
+	private MySQL mysql;
 	
 	@Override
-    public void onEnable(){
-		getLogger().info("onEnable has been invoked!");
+    public void onEnable() {
+		getLogger().info("Reminder plugin has been enabled.");
+		
+		config = new Config(this, "config.yml");
+		
+		mysql = new MySQL(this, config.get("mysql_url").toString(), config.get("username").toString(), config.get("password").toString());
+		mysql.openConnection();
+		getLogger().info("Reminder connection to MySQL has " + (mysql.isConnected() ? "succeeded." : "failed!"));
+		
+		CommandExecutor commandExecutor = new CommandParser(this, config, mysql);
+		getCommand("reminder").setExecutor(commandExecutor);
+		
+		//getLogger().info("tag:       " + config.get("tag"));
+		//getLogger().info("cooldown:  " + config.get("cooldown"));
+		//getLogger().info("frequency: " + config.get("frequency"));
+		//getLogger().info("resend:    " + config.get("resend"));
+		//getLogger().info("prefix:    " + config.get("prefix"));
+		
+		// TODO: set up reminders
     }
  
     @Override
     public void onDisable() {
-    	getLogger().info("onDisable has been invoked!");
-    }
-    
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-    	if(cmd.getName().equalsIgnoreCase("basic")){ // If the player typed /basic then do the following...
-    		sender.sendMessage("&1[Reminder] &eYou typed &lbasic");
-    		return true;
-    	} //If this has happened the function will return true. 
-            // If this hasn't happened the a value of false will be returned.
-    	return false; 
+    	mysql.closeConnection();
+    	
+    	getLogger().info("Reminder plugin has been disabled.");
+    	
+    	//TODO: disable reminders
     }
 }
