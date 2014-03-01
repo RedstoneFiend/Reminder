@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,7 +42,7 @@ public class Config {
 		try {
 			fileConfiguration.save(file);
 		} catch (IOException e) {
-			plugin.getLogger().severe("IOException while saving Reminder configuration file.");
+			plugin.getLogger().severe(ChatColor.RED + "IOException while saving Reminder configuration file.");
 			e.printStackTrace();
 		}
 	}

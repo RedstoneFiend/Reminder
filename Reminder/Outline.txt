@@ -13,16 +13,14 @@ Table
 Commands 
 /reminder help 
         Display commands and usage 
-/reminder add <player> '<message>' delay <seconds>|activate <yyyy-mm-dd HH:MM> [tag '<tag>'] [cooldown <seconds>] [frequency <seconds>] [count <count>] 
+/reminder add <player> '<message>' <delay-seconds>|<yyyy-mm-dd HH:MM> [tag <tag>] [cooldown <seconds>] [frequency <seconds>] [count <count>] 
         Add a reminder. 
-/reminder list [player <player>] [tag '<text>'] 
+/reminder list [<player>] [tag <text>] 
         List all reminders or reminders for a player and or tag 
-/reminder delete [<id>]|[[player <player>] [tag '<text>']] 
+/reminder delete <id>|[player <player>] [tag <text>] 
         Delete a reminder by id or by player and/or tag 
-/reminder update <id> [player <player>] [message '<message>'] [delay <seconds>|activate <yyyy-mm-dd HH:MM>] [tag '<text>'] [cooldown <seconds>] [frequency <seconds>] [count <seconds>] 
+/reminder update <id>|<player> <tag> [message '<message>'] [delay <seconds>|activate <yyyy-mm-dd HH:MM>] [cooldown <seconds>] [frequency <seconds>] [count <seconds>] 
         Update a reminder referenced by id
-/reminder setdefault [cooldown <seconds>] [frequency <seconds>] [count <count>] [tag '<text>'] [prefix '<text>'] 
-        Sets the default for the given setting, saves it in settings.yml and activates the setting immediately. 
 /reminder reload 
         Reload settings.yml 
 /reminder stop 

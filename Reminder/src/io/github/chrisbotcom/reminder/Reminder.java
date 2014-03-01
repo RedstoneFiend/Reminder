@@ -1,5 +1,6 @@
 package io.github.chrisbotcom.reminder;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,7 +16,7 @@ public final class Reminder extends JavaPlugin {
 		
 		mysql = new MySQL(this, config.get("mysql_url").toString(), config.get("username").toString(), config.get("password").toString());
 		mysql.openConnection();
-		getLogger().info("Reminder connection to MySQL has " + (mysql.isConnected() ? "succeeded." : "failed!"));
+		getLogger().info("Reminder connection to MySQL has " + (mysql.isConnected() ? "succeeded." : ChatColor.RED + "failed!"));
 		
 		CommandExecutor commandExecutor = new CommandParser(this, config, mysql);
 		getCommand("reminder").setExecutor(commandExecutor);

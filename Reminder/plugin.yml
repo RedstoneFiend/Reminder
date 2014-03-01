@@ -20,7 +20,7 @@ commands:
       description: List all reminders or reminders for a player and or tag.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> [player <player>] [tag '<text>']
+      usage: /<command> [player <player>] [tag <text>]
    reminder delete:
       description: Delete a reminder by id or by player and/or tag.
       permission: reminder

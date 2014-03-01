@@ -29,7 +29,7 @@ public class MySQL {
             connection = DriverManager.getConnection(this.url, this.user, this.password);
         } 
         catch (Exception e) {
-            plugin.getLogger().info(plugin.getName() + ": " + e.getMessage());
+            plugin.getLogger().info("MySQL Open Connection: " + e.getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ public class MySQL {
                 connection.close();
             } 
             catch (Exception e) {
-                plugin.getLogger().info(plugin.getName() + ": " + e.getMessage());
+                plugin.getLogger().info("MySQL CloseConnection: " + e.getMessage());
             }
         }
     }
@@ -57,7 +57,7 @@ public class MySQL {
         		resultset = statement.executeQuery(query);
         	}
         	catch (Exception e) {
-        		plugin.getLogger().info(plugin.getName() + ": " + e.getMessage());
+        		plugin.getLogger().info("MySQL Query: " + e.getMessage());
             }
         }
         
@@ -73,7 +73,7 @@ public class MySQL {
         		rowsAffected = statement.executeUpdate(query);
         	}
         	catch (Exception e) {
-        		plugin.getLogger().info(plugin.getName() + ": " + e.getMessage());
+        		plugin.getLogger().info("MySQL Update: " + e.getMessage());
             }
         }
         

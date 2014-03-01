@@ -5,7 +5,6 @@ public enum Commands {
 	list,
 	delete,
 	update,
-	setdefault,
 	reload,
 	stop,
 	resume,
