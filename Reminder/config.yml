@@ -1,22 +1,18 @@
-# config.yml 
+# config.yml for Reminder plugin
+
 # These are the default settings used when adding a reminder if they are not specified in the add. 
 
 # Default tag to be added to reminder
 tag: 'text'
 
 # Default number of seconds after login to send message.
-cooldown: 30
+delay: 30
 
 # Default number of seconds between each message.
-frequency: 600
+rate: 600
 
 # Default maximum number of times to send a given message. 0 is finished. -1 to ignore max
-resend: 3
+echo: 3
 
 # Title of the reminder message, ie. '&e[Reminder]&2'. This does not change the prefix displayed from reminder in response to commands. 
 prefix: '[Reminder]'
-
-# Connection URL, username and password for MySQL database
-mysql_url: 'jdbc:mysql://hostname:port/database'
-username: 'username'
-password: 'password'
