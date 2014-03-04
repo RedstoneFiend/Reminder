@@ -15,7 +15,7 @@ commands:
       description: Add a reminder.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> <player> "<message>" <seconds>|activate <yyyy-mm-dd HH:MM> [tag '<tag>'] [cooldown <seconds>] [frequency <seconds>] [count <count>]
+      usage: /<command> <player> "<message>" <seconds>|activate <yyyy-mm-dd HH:MM> [tag <tag>] [cooldown <seconds>] [frequency <seconds>] [count <count>]
    reminder list:
       description: List all reminders or reminders for a player and or tag.
       permission: reminder
@@ -30,7 +30,7 @@ commands:
       description: Update a reminder referenced by id.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> <id> [player <player>] [message '<message>'] [delay <seconds>|activate <yyyy-mm-dd HH:MM>] [tag '<text>'] [cooldown <seconds>] [frequency <seconds>] [count <seconds>] 
+      usage: /<command> <id> [player <player>] [message '<message>'] [delay <seconds>|activate <yyyy-mm-dd HH:MM>] [tag <text>] [cooldown <seconds>] [frequency <seconds>] [count <seconds>] 
    reminder setdefault:
       description: Sets the default for the given setting, saves it in settings.yml and activates the setting immediately.
       permission: reminder

@@ -17,7 +17,6 @@ public final class Reminder extends JavaPlugin {
 		getLogger().info("Reminder plugin has been enabled.");
 		
 		FileConfiguration config = getConfig();
-		config = getConfig();
 		config.options().copyDefaults(true);
 		saveConfig();
 			

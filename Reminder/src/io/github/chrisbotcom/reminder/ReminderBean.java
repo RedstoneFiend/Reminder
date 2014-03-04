@@ -91,22 +91,22 @@ public class ReminderBean {
 			case start:
 				if (value.startsWith("+"))
 				{ // number
-					long date = Long.parseLong(value.substring(1));
-					if (start == null)
-						start = new Date().getTime();
-					start = (start / 86400000) + date;
+					long offset = Long.parseLong(value.substring(1)) * 1000;
+					start = (start == null ? new Date().getTime() : start) + offset;
 				}
 				else if (value.length() > 5)
 				{ // date
-					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-					long date = simpleDateFormat.parse(value).getTime();
-					start = (start % 60000) + date; 
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+					String time = start == null ? "00:00" : simpleDateFormat.format(new Date(start));
+					simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+					start = simpleDateFormat.parse(value + " " + time).getTime();
 				}
 				else
 				{ // time
-					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-					long date = simpleDateFormat.parse(value).getTime();
-					start = (start / 86400000) + date;
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					String date = start == null ? simpleDateFormat.format(new Date()) : simpleDateFormat.format(new Date(start));
+					simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+					start = simpleDateFormat.parse(value + " " + date).getTime();
 				}
 				break;
 			case tag:

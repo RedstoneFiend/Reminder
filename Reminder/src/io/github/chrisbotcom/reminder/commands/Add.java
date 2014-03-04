@@ -17,7 +17,7 @@ public class Add {
 	{
 		if (bean.getId() != null)
 		{
-			throw new ReminderException("Cannot specify id for update.");
+			throw new ReminderException("Cannot specify id when adding a reminder.");
 		}
 		if (bean.getPlayer() == null)
 			throw new ReminderException("Missing required parameter player.");
@@ -25,6 +25,15 @@ public class Add {
 			throw new ReminderException("Missing required parameter message.");
 		if (bean.getStart() == null)
 			throw new ReminderException("Missing required parameter start.");
+		
+		if (bean.getTag() == null)
+			bean.setTag(plugin.getConfig().getString("tag"));
+		if (bean.getRate() == null)
+			bean.setRate(plugin.getConfig().getInt("rate"));
+		if (bean.getDelay() == null)
+			bean.setDelay(plugin.getConfig().getInt("delay"));
+		if (bean.getEcho() == null)
+			bean.setEcho(plugin.getConfig().getInt("echo"));
 		
 		plugin.getDatabase().insert(bean);
 		sender.sendMessage(ChatColor.GREEN + "[Reminder] Record added.");

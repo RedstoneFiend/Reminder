@@ -34,15 +34,17 @@ public class CommandParser implements CommandExecutor {
 			switch (commandName)
 			{
 				case add:
-					if (args.length >1)
+					if (args.length > 0)
 						return Add.execute(plugin, sender, parseTokens(args));
 				case list:
-					Llist.execute();
+					Llist.execute(plugin, sender);
 					break;
 				case delete:
-					Delete.execute();
+				case del:
+					return Delete.execute(plugin, sender, parseTokens(args));
 					break;
 				case update:
+				case up:
 					Update.execute();
 					break;
 				case reload:
@@ -56,7 +58,10 @@ public class CommandParser implements CommandExecutor {
 					break;
 				case time:
 					Time.execute(sender);
-					break;
+				case setdefault:
+				case setdefaults:
+				case set:
+					return Setdefault.execute(plugin, sender, parseTokens(args));
 				default:
 					break;					
 			}
@@ -117,6 +122,8 @@ public class CommandParser implements CommandExecutor {
 			}
 			else if (args[i].startsWith("+"))
 			{
+				if (args[i].length() < 2)
+					throw new ReminderException(String.format("Erroneous parameter '%2$s' in command line at '%1$s %2$s'! Expected +<number>.", args[i-1], args[i]));				
 				bean.set("start", args[i]);
 				i++;
 				continue;
