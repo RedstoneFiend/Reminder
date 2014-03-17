@@ -3,10 +3,10 @@
 # These are the default settings used when adding a reminder if they are not specified in the add. 
 
 # Default tag to be added to reminder
-tag: 'text'
+tag: 'default'
 
 # Default number of seconds after login to send message.
-delay: 30
+delay: 60
 
 # Default number of seconds between each message.
 rate: 600
@@ -16,3 +16,11 @@ echo: 3
 
 # Title of the reminder message, ie. '&e[Reminder]&2'. This does not change the prefix displayed from reminder in response to commands. 
 prefix: '[Reminder]'
+
+# Max rows returned from list command
+limit: 20
+
+# MySql Database Configuration
+dbUrl: jdbc:mysql://localhost/Chrisbot
+dbUser: root
+dbPassword: root

@@ -3,7 +3,7 @@ author: Chrisbotcom
 website: http://chrisbotcom.github.io/Reminder/
 main: io.github.chrisbotcom.reminder.Reminder
 version: 1.0
-database: true
+database: false
 commands:
    reminder:
       aliases: [rem]

@@ -16,19 +16,22 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package io.github.chrisbotcom.reminder.commands;
+package io.github.chrisbotcom.reminder;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import org.bukkit.command.CommandSender;
+public class ReminderTask extends BukkitRunnable {
+	
+    private final Reminder plugin;
+    
+    public ReminderTask(Reminder plugin) {
+        this.plugin = plugin;
+    }
+ 
+    @Override
+    public void run() {
+        // What you want to schedule goes here
+        plugin.getServer().broadcastMessage("Running ReminderTask");
+    }
 
-public class Time {
-	public static boolean execute(CommandSender sender)
-	{
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		sender.sendMessage("Server time: " + simpleDateFormat.format(new Date()));
-		
-		return true;
-	}
 }

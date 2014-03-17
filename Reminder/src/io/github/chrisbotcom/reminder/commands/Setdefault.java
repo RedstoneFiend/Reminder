@@ -1,49 +1,68 @@
+/*
+ * Reminder - Reminder plugin for Bukkit
+ * Copyright (C) 2014 Chris Courson http://www.github.com/Chrisbotcom
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ */
+
 package io.github.chrisbotcom.reminder.commands;
 
-import io.github.chrisbotcom.reminder.ReminderBean;
+import io.github.chrisbotcom.reminder.Reminder;
+import io.github.chrisbotcom.reminder.ReminderRecord;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Setdefault {
-	public static boolean execute(JavaPlugin plugin, CommandSender sender, ReminderBean bean) throws Exception
+	
+	public static boolean execute(Reminder plugin, CommandSender sender, ReminderRecord reminder) throws Exception
 	{
 		String returnMessage = null;
 		String errorMessage = null;
 
 		// Setable defaults
-		if (bean.getDelay() != null)
+		if (reminder.getDelay() != null)
 		{
-			plugin.getConfig().set("delay", bean.getDelay());
+			plugin.getConfig().set("delay", reminder.getDelay());
 			returnMessage = "delay";
 		}
-		if (bean.getRate() != null)
+		if (reminder.getRate() != null)
 		{
-			plugin.getConfig().set("rate", bean.getRate());
+			plugin.getConfig().set("rate", reminder.getRate());
 			returnMessage = returnMessage == null ? "rate" : ", rate";
 		}
-		if (bean.getEcho() != null)
+		if (reminder.getEcho() != null)
 		{
-			plugin.getConfig().set("echo", bean.getEcho());
+			plugin.getConfig().set("echo", reminder.getEcho());
 			returnMessage = returnMessage == null ? "echo" : ", echo";
 		}
-		if (bean.getTag() != null)
+		if (reminder.getTag() != null)
 		{
-			plugin.getConfig().set("tag", bean.getTag());
+			plugin.getConfig().set("tag", reminder.getTag());
 			returnMessage = returnMessage == null ? "tag" : ", tag";
 		}
 		
 		// Non-setable defaults
-		if (bean.getId() != null)
+		if (reminder.getId() != null)
 		{
 			errorMessage = "id";
 		}
-		if (bean.getMessage() != null)
+		if (reminder.getMessage() != null)
 		{
 			errorMessage = errorMessage == null ? "message" : ", message";
 		}
-		if (bean.getPlayer() != null)
+		if (reminder.getPlayer() != null)
 		{
 			errorMessage = errorMessage == null ? "player" : ", player";
 		}
@@ -51,12 +70,12 @@ public class Setdefault {
 		if (returnMessage != null)
 		{
 			plugin.saveConfig();
-			sender.sendMessage(ChatColor.GREEN + "[Reminder] Default value(s) set for " + returnMessage + "." );
+			sender.sendMessage(ChatColor.GREEN + "Default value(s) set for " + returnMessage + "." );
 		}
 		if (errorMessage != null)
-			sender.sendMessage(ChatColor.RED + "[Reminder] These parameter were specified but were not set: " + errorMessage);
+			sender.sendMessage(ChatColor.RED + "These parameter were specified but were not set: " + errorMessage);
 		
-		sender.sendMessage(ChatColor.WHITE + String.format("[Reminder] Current setting(s): tag='%s', delay=%s, rate=%s, echo=%s: ", 
+		sender.sendMessage(ChatColor.WHITE + String.format("Current setting(s): tag='%s', delay=%s, rate=%s, echo=%s: ", 
 				plugin.getConfig().get("tag"), plugin.getConfig().get("delay"), plugin.getConfig().get("rate"), plugin.getConfig().get("echo")));
 		return true;
 	}

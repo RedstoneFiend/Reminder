@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table (name = "reminders")
 
-public class ReminderBean {
+public class ReminderRecord {
 	@Id private Long id;
 	@Column private String player;
 	@Column private String message;
@@ -43,32 +43,31 @@ public class ReminderBean {
 	public String get(String name)
 	{
 		String value = null;
-		TokensEnum tokenName = TokensEnum.valueOf(name);
-		switch (tokenName)
+		switch (name)
 		{
-			case id:
-				value = id.toString();
+			case "id":
+				value = id == null ? null : id.toString();
 				break;
-			case player:
+			case "player":
 				value = player;
 				break;
-			case message:
+			case "message":
 				value = message;
 				break;
-			case start:
-				value = start.toString();
+			case "start":
+				value = start == null ? null : start.toString();
 				break;
-			case tag:
+			case "tag":
 				value = tag;
 				break;
-			case delay:
-				value = delay.toString();
+			case "delay":
+				value = delay == null ? null : delay.toString();
 				break;
-			case rate:
-				value = rate.toString();
+			case "rate":
+				value = rate == null ? null : rate.toString();
 				break;
-			case echo:
-				value = echo.toString();
+			case "echo":
+				value = echo == null ? null : echo.toString();
 				break;
 		}
 		return value;
@@ -76,22 +75,21 @@ public class ReminderBean {
 	
 	public void set(String name, String value) throws ParseException
 	{
-		TokensEnum tokenName = TokensEnum.valueOf(name);
-		switch (tokenName)
+		switch (name)
 		{
-			case id:
+			case "id":
 				id = Long.parseLong(value);
 				break;
-			case player:
+			case "player":
 				player = value;
 				break;
-			case message:
+			case "message":
 				message = value;
 				break;
-			case start:
+			case "start":
 				if (value.startsWith("+"))
-				{ // number
-					long offset = Long.parseLong(value.substring(1)) * 1000;
+				{ // minutes
+					long offset = Long.parseLong(value) * 60000;
 					start = (start == null ? new Date().getTime() : start) + offset;
 				}
 				else if (value.length() > 5)
@@ -109,16 +107,16 @@ public class ReminderBean {
 					start = simpleDateFormat.parse(value + " " + date).getTime();
 				}
 				break;
-			case tag:
+			case "tag":
 				tag = value;
 				break;
-			case delay:
+			case "delay":
 				delay = Integer.parseInt(value);
 				break;
-			case rate:
+			case "rate":
 				rate = Integer.parseInt(value);
 				break;
-			case echo:
+			case "echo":
 				echo = Integer.parseInt(value);
 				break;
 		}
