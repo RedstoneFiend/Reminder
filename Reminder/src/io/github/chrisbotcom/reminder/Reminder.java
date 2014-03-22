@@ -21,11 +21,12 @@ package io.github.chrisbotcom.reminder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -39,8 +40,8 @@ public final class Reminder extends JavaPlugin implements Listener {
 	
 	public Connection db = null;
 	public FileConfiguration config = null;
-	Map<String, Collection<BukkitTask>> tasks = new HashMap<String, Collection<BukkitTask>>();
-	
+	BukkitTask reminderTask;
+	public Map <String,Long> playerLoginTime = new HashMap<String,Long>();
 	@Override
 	public void onLoad() {
 
@@ -75,11 +76,18 @@ public final class Reminder extends JavaPlugin implements Listener {
 		
 		// Set player join listener
 		getServer().getPluginManager().registerEvents(this, this);
+		
+		// Start asynchronous reminderTask. Runs every 15 seconds
+	    reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), 300L, 300L);
     }
  
     @Override
     public void onDisable() {
     	
+    	// Stop asynchronous reminderTask
+    	reminderTask.cancel();
+    	
+    	// Close database connection.
     	try {
 			db.close();
 		} catch (SQLException e) {
@@ -91,19 +99,13 @@ public final class Reminder extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
     	
-        // Create the task and schedule to run it once, after 20 ticks (1 second)
-        @SuppressWarnings("unused")
-		BukkitTask task = new ReminderTask(this).runTaskLater(this, 20 * 10);
+    	playerLoginTime.put(event.getPlayer().getName(), new Date().getTime());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
     	
-    	
-        // Create the task and schedule to run it once, after 20 ticks (1 second)
-        //@SuppressWarnings("unused")
-		//BukkitTask task = new ReminderTask(this).runTaskLater(this, 20 * 10);
-    	
+    	playerLoginTime.remove(event.getPlayer().getName());
     }
 }
 

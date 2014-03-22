@@ -50,8 +50,6 @@ public class CommandParser implements CommandExecutor {
 		String msg = "(?:\\s+)(?:[\\\"\\'])(?<msg>.*?)(?:[\\\"\\'])";
 		String player = "(?:\\s+)(?<player>\\w+)";
 		pattern = Pattern.compile(String.format("%s|%s|%s|%s|%s|%s|%s|%s", cmd, tag, date, time, offset, id, msg, player), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-		
-		plugin.getLogger().info("pattern built.");
 	}
 
 	@Override
