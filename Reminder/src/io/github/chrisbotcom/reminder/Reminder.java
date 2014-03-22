@@ -18,12 +18,15 @@
 
 package io.github.chrisbotcom.reminder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -55,7 +58,7 @@ public final class Reminder extends JavaPlugin implements Listener {
 		this.config.options().copyDefaults(true);
 		this.saveConfig();		
 		
-		// Set up database
+		// Connect to database
 		try {
 			// Test for JDBC driver
 			Class.forName("com.mysql.jdbc.Driver");
@@ -70,6 +73,28 @@ public final class Reminder extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 
+		// Verify table
+		try {
+			this.db.prepareStatement("SELECT COUNT(*) FROM reminders").execute();
+		} catch (SQLException e) {
+			// reminders table does not exist. Create it.
+			try {
+				InputStream inputStream = this.getClass().getResourceAsStream("/Resource/create_table.sql");
+				Scanner scanner = new Scanner(inputStream);
+				String createTableSql = scanner.useDelimiter("\\Z").next();
+				scanner.close();
+				inputStream.close();
+				this.db.prepareStatement(createTableSql).executeUpdate();
+				this.getLogger().info("Created table 'reminders'.");
+			} catch (IOException e1) {
+				this.getLogger().severe("Unable to open or close /Resource/create_table.sql!");
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				this.getLogger().severe("Unable to create table 'reminders'!");
+				e1.printStackTrace();
+			}
+		}
+		
         // Set command executor
 		CommandExecutor commandExecutor = new CommandParser(this);
 		this.getCommand("reminder").setExecutor(commandExecutor);
@@ -91,7 +116,7 @@ public final class Reminder extends JavaPlugin implements Listener {
     	try {
 			db.close();
 		} catch (SQLException e) {
-			this.getLogger().log(Level.SEVERE, "Unable to close MySQL Connection!");
+			this.getLogger().severe("Unable to close MySQL Connection!");
 			e.printStackTrace();
 		}
    }

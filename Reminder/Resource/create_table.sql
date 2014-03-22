@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `reminders` (
   `player` varchar(255) DEFAULT NULL,
   `message` varchar(255) DEFAULT NULL,
   `start` bigint(20) DEFAULT NULL,
+  `last` bigint(20) DEFAULT NULL,
   `tag` varchar(255) DEFAULT NULL,
   `delay` int(11) DEFAULT NULL,
   `rate` int(11) DEFAULT NULL,
