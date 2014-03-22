@@ -2,7 +2,7 @@ name: Reminder
 author: Chrisbotcom
 website: http://chrisbotcom.github.io/Reminder/
 main: io.github.chrisbotcom.reminder.Reminder
-version: 1.0.2
+version: 1.0.3
 commands:
    reminder:
       aliases: rem

@@ -70,28 +70,29 @@ public final class Reminder extends JavaPlugin implements Listener {
         }
 		catch (SQLException e) {
 			this.getLogger().log(Level.SEVERE, "Unable to open MySQL Connection!");
-			e.printStackTrace();
 		}
 
 		// Verify table
-		try {
-			this.db.prepareStatement("SELECT COUNT(*) FROM reminders").execute();
-		} catch (SQLException e) {
-			// reminders table does not exist. Create it.
+		if (this.db != null) {
 			try {
-				InputStream inputStream = this.getClass().getResourceAsStream("/Resource/create_table.sql");
-				Scanner scanner = new Scanner(inputStream);
-				String createTableSql = scanner.useDelimiter("\\Z").next();
-				scanner.close();
-				inputStream.close();
-				this.db.prepareStatement(createTableSql).executeUpdate();
-				this.getLogger().info("Created table 'reminders'.");
-			} catch (IOException e1) {
-				this.getLogger().severe("Unable to open or close /Resource/create_table.sql!");
-				e1.printStackTrace();
-			} catch (SQLException e1) {
-				this.getLogger().severe("Unable to create table 'reminders'!");
-				e1.printStackTrace();
+				this.db.prepareStatement("SELECT COUNT(*) FROM reminders").execute();
+			} catch (SQLException e) {
+				// reminders table does not exist. Create it.
+				try {
+					InputStream inputStream = this.getClass().getResourceAsStream("/Resource/create_table.sql");
+					Scanner scanner = new Scanner(inputStream);
+					String createTableSql = scanner.useDelimiter("\\Z").next();
+					scanner.close();
+					inputStream.close();
+					this.db.prepareStatement(createTableSql).executeUpdate();
+					this.getLogger().info("Created table 'reminders'.");
+				} catch (IOException e1) {
+					this.getLogger().severe("Unable to open or close /Resource/create_table.sql!");
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					this.getLogger().severe("Unable to create table 'reminders'!");
+					e1.printStackTrace();
+				}
 			}
 		}
 		
@@ -103,7 +104,7 @@ public final class Reminder extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 		
 		// Start asynchronous reminderTask. Runs every 15 seconds
-		if (config.getBoolean("startOnLoad")) {
+		if (config.getBoolean("startOnLoad") && (this.db != null)) {
 			reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), 300L, 300L);
 		}
     }
@@ -112,14 +113,20 @@ public final class Reminder extends JavaPlugin implements Listener {
     public void onDisable() {
     	
     	// Stop asynchronous reminderTask
-    	reminderTask.cancel();
-    	
+		if (this.reminderTask != null &&
+				(this.getServer().getScheduler().isCurrentlyRunning(this.reminderTask.getTaskId())
+				|| this.getServer().getScheduler().isQueued(this.reminderTask.getTaskId()))) {
+			this.getServer().getScheduler().cancelTask(this.reminderTask.getTaskId());
+		}
+
     	// Close database connection.
-    	try {
-			db.close();
-		} catch (SQLException e) {
-			this.getLogger().severe("Unable to close MySQL Connection!");
-			e.printStackTrace();
+		if (this.db != null) {
+	    	try {
+				db.close();
+			} catch (SQLException e) {
+				this.getLogger().severe("Unable to close MySQL Connection!");
+				e.printStackTrace();
+			}
 		}
    }
     
