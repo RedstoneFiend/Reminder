@@ -2,7 +2,7 @@ name: Reminder
 author: Chrisbotcom
 website: http://chrisbotcom.github.io/Reminder/
 main: io.github.chrisbotcom.reminder.Reminder
-version: 1.0.1
+version: 1.0.2
 commands:
    reminder:
       aliases: rem
@@ -53,7 +53,7 @@ commands:
       permission-message: You don't have <permission>
       usage: /<command>
    reminder resume:
-      aliases: rem resume
+      aliases: [rem resume,rem start]
       description: Resume all reminders.
       permission: reminder
       permission-message: You don't have <permission>

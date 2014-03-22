@@ -50,20 +50,22 @@ public class Llist {
 		preparedStatement.setString(2, reminder.getPlayer() == null ? "EMPTY" : reminder.getPlayer());
 		preparedStatement.setString(3, reminder.getTag() == null ? "EMPTY" : reminder.getTag());
 		preparedStatement.setInt(4, plugin.getConfig().getInt("maxRows"));
-
+		//plugin.getLogger().info(preparedStatement.toString());
+		
 		ResultSet reminders = preparedStatement.executeQuery();
 		
 		String outputMessage = "";
-		String formatter = "\n%6s | %-16s | %-16s | %-16s | %8s | %9s | %6s\n\tMessage: %s";
-		outputMessage += String.format(ChatColor.BOLD + formatter + ChatColor.RESET, "id", "player", "start", "tag", "delay", "rate", "echo", "");
+		String formatter = "\n%6s | %-16s | %-16s | %-16s | %-16s | %8s | %9s | %6s\n\tMessage: %s";
+		outputMessage += String.format(ChatColor.BOLD + formatter + ChatColor.RESET, "id", "player", "start", "last", "tag", "delay", "rate", "echo", "");
 	
 		int i = 0;
 		while (reminders.next()) { 
 			 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			 String start = simpleDateFormat.format(new Date(reminders.getLong("start")));
-
+			 String last = simpleDateFormat.format(new Date(reminders.getLong("last")));
+			 
 			 outputMessage += String.format(formatter, reminders.getInt("id"), reminders.getString("player"), 
-					 start, reminders.getString("tag"), reminders.getInt("delay"), reminders.getInt("rate"), 
+					 start, last, reminders.getString("tag"), reminders.getInt("delay"), reminders.getInt("rate"), 
 					 reminders.getInt("echo"), reminders.getString("message"));
 			 i++;
 		 }

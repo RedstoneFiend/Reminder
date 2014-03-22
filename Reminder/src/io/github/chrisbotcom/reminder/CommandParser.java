@@ -39,7 +39,7 @@ public class CommandParser implements CommandExecutor {
 		this.plugin = plugin;
 
 		// Compile regex pattern
-		String commands = "add|list|delete|del|update|up|reload|stop|resume|time|setdefault|setdefaults|set";
+		String commands = "add|list|delete|del|update|up|reload|stop|resume|start|time|setdefault|setdefaults|set";
 		String tags = "tag|delay|rate|echo";
 		String cmd = String.format("(?<cmd>^%s)", commands);
 		String id = "(?:\\s+)(?<id>\\d+)";
@@ -48,7 +48,7 @@ public class CommandParser implements CommandExecutor {
 		String time = "(?:\\s+)(?<time>\\d{1,2}:\\d{2})";
 		String offset = "(?:\\s+)(?<offset>\\+\\d+)";
 		String msg = "(?:\\s+)(?:[\\\"\\'])(?<msg>.*?)(?:[\\\"\\'])";
-		String player = "(?:\\s+)(?<player>\\w+)";
+		String player = "(?:\\s+)(?<player>\\w+|\\*)";
 		pattern = Pattern.compile(String.format("%s|%s|%s|%s|%s|%s|%s|%s", cmd, tag, date, time, offset, id, msg, player), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	}
 
@@ -129,14 +129,12 @@ public class CommandParser implements CommandExecutor {
 				case "up":
 					return Update.execute(plugin, sender, reminder);
 				case "reload":
-					Reload.execute(plugin);
-					break;
+					return Reload.execute(plugin);
 				case "stop":
-					Stop.execute();
-					break;
+					return Stop.execute(plugin, sender);
 				case "resume":
-					Resume.execute();
-					break;
+				case "start":
+					return Resume.execute(plugin, sender);
 				case "time":
 					return Time.execute(sender);
 				case "setdefault":
@@ -144,7 +142,7 @@ public class CommandParser implements CommandExecutor {
 				case "set":
 					return Setdefault.execute(plugin, sender, reminder);
 				default:
-					break;					
+					return false;					
 			}
 		}
 		catch (ReminderException e) {

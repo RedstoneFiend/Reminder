@@ -43,7 +43,7 @@ public final class Reminder extends JavaPlugin implements Listener {
 	
 	public Connection db = null;
 	public FileConfiguration config = null;
-	BukkitTask reminderTask;
+	public BukkitTask reminderTask;
 	public Map <String,Long> playerLoginTime = new HashMap<String,Long>();
 	@Override
 	public void onLoad() {
@@ -103,7 +103,9 @@ public final class Reminder extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 		
 		// Start asynchronous reminderTask. Runs every 15 seconds
-	    reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), 300L, 300L);
+		if (config.getBoolean("startOnLoad")) {
+			reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), 300L, 300L);
+		}
     }
  
     @Override

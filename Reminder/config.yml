@@ -1,26 +1,11 @@
 # config.yml for Reminder plugin
-
-# These are the default settings used when adding a reminder if they are not specified in the add. 
-
-# Default tag to be added to reminder
-tag: 'default'
-
-# Default number of seconds after login to send message.
-delay: 60
-
-# Default number of seconds between each message.
-rate: 600
-
-# Default maximum number of times to send a given message. 0 is finished. -1 to ignore max
+startOnLoad: false;
+tag: default
+delay: 1
+rate: 5
 echo: 3
+maxRows: 20
 
-# Title of the reminder message, ie. '&e[Reminder]&2'. This does not change the prefix displayed from reminder in response to commands. 
-prefix: '[Reminder]'
-
-# Max rows returned from list command
-limit: 20
-
-# MySql Database Configuration
 dbUrl: jdbc:mysql://localhost/Chrisbot
 dbUser: root
 dbPassword: root
