@@ -2,56 +2,64 @@ name: Reminder
 author: Chrisbotcom
 website: http://chrisbotcom.github.io/Reminder/
 main: io.github.chrisbotcom.reminder.Reminder
-version: 1.0
-database: false
+version: 1.0.1
 commands:
    reminder:
-      aliases: [rem]
+      aliases: rem
       description: Reminder plugin.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /help <command> [add|list|delete|update|setdefault|reload|stop|resume|time]
+      usage: "Type \u00a7c/help <command>\u00a7r for command list.\n\u00a7cType /? reminder [command]\u00a7r for specific help.\nVisit \u00a73http://dev.bukkit.org/bukkit-plugins/reminder/ \u00a7rfor detailed help."
    reminder add:
+      aliases: rem add
       description: Add a reminder.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> <player> "<message>" <seconds>|activate <yyyy-mm-dd HH:MM> [tag <tag>] [cooldown <seconds>] [frequency <seconds>] [count <count>]
+      usage: /<command> <player> [<tag>] <message> <+seconds>|<yyyy-mm-dd> <hh:mm> [tag <tag>] [delay <minutes>] [rate <seconds>] [echo <count>]
    reminder list:
-      description: List all reminders or reminders for a player and or tag.
+      aliases: rem list
+      description: List all reminders or reminders for a player and/or tag.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> [player <player>] [tag <text>]
+      usage: /<command> <id> | [<player>] [<tag>]
    reminder delete:
-      description: Delete a reminder by id or by player and/or tag.
+      aliases: [rem del,rem delete,reminder del]
+      description: Delete reminder(s) by id or by player and/or tag.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> [<id>]|[[player <player>] [tag '<text>']]
+      usage: /<command> [<id>] | [<player>] [<text>']
    reminder update:
+      aliases: [rem up,rem update,reminder up]
       description: Update a reminder referenced by id.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> <id> [player <player>] [message '<message>'] [delay <seconds>|activate <yyyy-mm-dd HH:MM>] [tag <text>] [cooldown <seconds>] [frequency <seconds>] [count <seconds>] 
+      usage: /<command> <id> | [<player>] [<tag>] <message> <+seconds>|<yyyy-mm-dd> <hh:mm> [tag <tag>] [delay <minutes>] [rate <seconds>] [echo <count>]
    reminder setdefault:
+      aliases: [rem set,rem setdefault,rem setdefaults,reminder set,reminder setdefaults]
       description: Sets the default for the given setting, saves it in settings.yml and activates the setting immediately.
       permission: reminder
       permission-message: You don't have <permission>
-      usage: /<command> [cooldown <seconds>] [frequency <seconds>] [count <count>] [tag '<text>'] [prefix '<text>']
+      usage: /<command> [delay <seconds>] [rate <seconds>] [count <count>] [tag '<text>'] [prefix '<text>']
    reminder reload:
+      aliases: rem reload
       description: Reload settings.yml.
       permission: reminder
       permission-message: You don't have <permission>
       usage: /<command>
    reminder stop:
+      aliases: rem stop
       description: Stop all reminders.
       permission: reminder
       permission-message: You don't have <permission>
       usage: /<command>
    reminder resume:
+      aliases: rem resume
       description: Resume all reminders.
       permission: reminder
       permission-message: You don't have <permission>
       usage: /<command>
    reminder time:
+      aliases: rem time
       description: Report server time.
       permission: reminder
       permission-message: You don't have <permission>
