@@ -1,5 +1,5 @@
 # config.yml for Reminder plugin
-startOnLoad: false;
+startOnLoad: false
 tag: default
 delay: 1
 rate: 5

@@ -104,7 +104,7 @@ public final class Reminder extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 		
 		// Start asynchronous reminderTask. Runs every 15 seconds
-		if (config.getBoolean("startOnLoad") && (this.db != null)) {
+		if ((config.getBoolean("startOnLoad") == true) && (this.db != null)) {
 			reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), 300L, 300L);
 		}
     }
