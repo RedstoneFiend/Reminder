@@ -73,7 +73,7 @@ public class Update {
 		
 		int rows = preparedStatement.executeUpdate();
 		
-		sender.sendMessage(ChatColor.BLUE + String.format("%s", preparedStatement));
+		//sender.sendMessage(ChatColor.BLUE + String.format("%s", preparedStatement));
 		sender.sendMessage(ChatColor.GREEN + String.format("%s record(s) updated.", rows));
 		
 		return true;	}

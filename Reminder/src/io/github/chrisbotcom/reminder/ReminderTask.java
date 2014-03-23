@@ -100,10 +100,14 @@ public class ReminderTask implements Runnable {
 					player.sendMessage(resultSet.getString("message").replace('&', '\u00A7'));
 				
 					// update reminder set last to now, decrement echo
-					sql = "UPDATE reminders SET last = ?, echo = echo - 1 WHERE (id = ?) AND (echo > 0)";
+					sql = "UPDATE reminders SET last = ? WHERE (id = ?)";
 					preparedStatement = db.prepareStatement(sql);
 					preparedStatement.setLong(1, now);
 					preparedStatement.setInt(2, resultSet.getInt("id"));
+					preparedStatement.executeUpdate();
+					sql = "UPDATE reminders SET echo = echo - 1 WHERE (id = ?) AND (echo > 0)";
+					preparedStatement = db.prepareStatement(sql);
+					preparedStatement.setInt(1, resultSet.getInt("id"));
 					preparedStatement.executeUpdate();
 				}
 			} catch (SQLException e) {
