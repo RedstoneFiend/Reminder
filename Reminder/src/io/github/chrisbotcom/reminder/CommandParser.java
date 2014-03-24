@@ -1,11 +1,11 @@
-/*
+/* 
  * Reminder - Reminder plugin for Bukkit
  * Copyright (C) 2014 Chris Courson http://www.github.com/Chrisbotcom
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see http://www.gnu.org/licenses/.
+ * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
 
 package io.github.chrisbotcom.reminder;
@@ -43,7 +43,7 @@ public class CommandParser implements CommandExecutor {
 		String tags = "tag|delay|rate|echo";
 		String cmd = String.format("(?<cmd>^%s)", commands);
 		String id = "(?:\\s+)(?<id>\\d+)";
-		String tag = String.format("(?:\\s+)(?<tag>%s)(?:\\s+)(?<value>\\S+)", tags);
+		String tag = String.format("(?:\\s+)(?<tag>%s)(?:\\s+)(?<value>\\w+)", tags);
 		String date = "(?:\\s+)(?<date>\\d{1,4}-\\d{1,2}-\\d{1,2})";
 		String time = "(?:\\s+)(?<time>\\d{1,2}:\\d{2})";
 		String offset = "(?:\\s+)(?<offset>\\+\\d+)";
@@ -60,8 +60,10 @@ public class CommandParser implements CommandExecutor {
 		String commandLine = "";
 		
 		// Concatenate args.
-		if (args.length > 0) 
+		if (args.length > 0)  {
 			commandLine = StringUtils.join(args, ' ');
+			//plugin.getLogger().info(commandLine);
+		}
 		else
 			return false;
 
@@ -83,7 +85,7 @@ public class CommandParser implements CommandExecutor {
 		    	else if (matcher.group("tag") != null)
 		    	{
 		    		if (reminder.get(matcher.group("tag")) != null)
-		    			throw new ReminderException(String.format("'%s' is specified more than once!", matcher.group("tag")));
+		    			throw new ReminderException(String.format("Tag <%s> is specified more than once!", matcher.group("tag")));
 		    		else
 		    			reminder.set(matcher.group("tag"), matcher.group("value"));
 		    	}
@@ -103,7 +105,8 @@ public class CommandParser implements CommandExecutor {
 		    		else
 		    			reminder.setMessage(matcher.group("msg"));
 		    
-			    else if (matcher.group("player") != null)
+			    else if (matcher.group("player") != null) {
+			    	//plugin.getLogger().info("<player>" + matcher.group("player"));
 		    		if (reminder.getPlayer() != null)
 		    			if (reminder.getTag() == null)
 		    				reminder.setTag(matcher.group("player"));
@@ -111,6 +114,7 @@ public class CommandParser implements CommandExecutor {
 		    				throw new ReminderException("Player is specified more than once!");
 		    		else
 		    			reminder.setPlayer(matcher.group("player"));
+			    }
 		    }
 			
 		    if (commandName == null)

@@ -1,11 +1,11 @@
-/*
+/* 
  * Reminder - Reminder plugin for Bukkit
  * Copyright (C) 2014 Chris Courson http://www.github.com/Chrisbotcom
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see http://www.gnu.org/licenses/.
+ * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
 
 package io.github.chrisbotcom.reminder;
@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
+
+import net.gravitydevelopment.updater.Updater;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -57,6 +59,10 @@ public final class Reminder extends JavaPlugin implements Listener {
 		this.config = this.getConfig();
 		this.config.options().copyDefaults(true);
 		this.saveConfig();		
+		
+		// Check for updates
+		@SuppressWarnings("unused")
+		Updater updater = new Updater(this, 76647, this.getFile(), Updater.UpdateType.DEFAULT, false);
 		
 		// Connect to database
 		try {
