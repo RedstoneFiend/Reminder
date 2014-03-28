@@ -209,6 +209,7 @@ public class Updater {
 
         this.apiKey = key;
 
+        
         try {
             this.url = new URL(Updater.HOST + Updater.QUERY + id);
         } catch (final MalformedURLException e) {

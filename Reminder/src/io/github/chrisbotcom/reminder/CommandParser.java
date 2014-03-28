@@ -39,7 +39,7 @@ public class CommandParser implements CommandExecutor {
 		this.plugin = plugin;
 
 		// Compile regex pattern
-		String commands = "add|list|delete|del|update|up|reload|stop|resume|start|time|setdefault|setdefaults|set";
+		String commands = "add|list|delete|del|update|up|reload|stop|resume|start|time|setdefault|setdefaults|set|upgrade";
 		String tags = "tag|delay|rate|echo";
 		String cmd = String.format("(?<cmd>^%s)", commands);
 		String id = "(?:\\s+)(?<id>\\d+)";

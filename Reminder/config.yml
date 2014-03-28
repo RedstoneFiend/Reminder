@@ -1,10 +1,17 @@
 # config.yml for Reminder plugin
+
 startOnLoad: false
+
 tag: default
 delay: 1
 rate: 5
 echo: 3
+
 maxRows: 20
+
+checkUpdate: true
+autoUpdate: true
+removeZip: false
 
 dbUrl: jdbc:mysql://localhost/Chrisbot
 dbUser: root

@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 
-import net.gravitydevelopment.updater.Updater;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -47,6 +45,7 @@ public final class Reminder extends JavaPlugin implements Listener {
 	public FileConfiguration config = null;
 	public BukkitTask reminderTask;
 	public Map <String,Long> playerLoginTime = new HashMap<String,Long>();
+	
 	@Override
 	public void onLoad() {
 
@@ -60,9 +59,11 @@ public final class Reminder extends JavaPlugin implements Listener {
 		this.config.options().copyDefaults(true);
 		this.saveConfig();		
 		
-		// Check for updates
-		@SuppressWarnings("unused")
-		Updater updater = new Updater(this, 76647, this.getFile(), Updater.UpdateType.DEFAULT, false);
+		// Check for update if enabled and update if enabled
+		if (config.getBoolean("checkUpdate")) {
+			Thread thread = new Thread(new UpdateReminder(this));
+	        thread.start();
+		}
 		
 		// Connect to database
 		try {
@@ -114,8 +115,8 @@ public final class Reminder extends JavaPlugin implements Listener {
 			reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), 300L, 300L);
 		}
     }
- 
-    @Override
+
+	@Override
     public void onDisable() {
     	
     	// Stop asynchronous reminderTask
