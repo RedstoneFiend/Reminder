@@ -44,7 +44,7 @@ public final class Reminder extends JavaPlugin implements Listener {
 	public Connection db = null;
 	public FileConfiguration config = null;
 	public BukkitTask reminderTask;
-	public Map <String,Long> playerLoginTime = new HashMap<String,Long>();
+	public Map<String, Map<String, Object>> playerHashMap = new HashMap<String, Map<String, Object>>();
 	
 	@Override
 	public void onLoad() {
@@ -60,11 +60,13 @@ public final class Reminder extends JavaPlugin implements Listener {
 		this.saveConfig();		
 		
 		// Check for update if enabled and update if enabled
-		if (config.getBoolean("checkUpdate")) {
+/*		Curse breaks updater. Curse does not reliably update JSON query result when verison 1.1 is approved.
+ * 		
+ * 		if (config.getBoolean("checkUpdate")) {
 			Thread thread = new Thread(new UpdateReminder(this));
 	        thread.start();
 		}
-		
+*/		
 		// Connect to database
 		try {
 			// Test for JDBC driver
@@ -110,9 +112,13 @@ public final class Reminder extends JavaPlugin implements Listener {
 		// Set player join listener
 		getServer().getPluginManager().registerEvents(this, this);
 		
-		// Start asynchronous reminderTask. Runs every 15 seconds
+		// Start asynchronous reminderTask. Runs every taskRate seconds. 1 second = 20 ticks. Valid range 15 - 120.
+		Long taskRate = this.config.getLong("taskRate");
+		if (taskRate < 15L) taskRate = 15L;
+		if (taskRate > 120L) taskRate = 120L;
+		taskRate *= 20L;
 		if ((config.getBoolean("startOnLoad") == true) && (this.db != null)) {
-			reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), 300L, 300L);
+			reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), taskRate, taskRate);
 		}
     }
 
@@ -140,13 +146,14 @@ public final class Reminder extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
     	
-    	playerLoginTime.put(event.getPlayer().getName(), new Date().getTime());
+    	playerHashMap.put(event.getPlayer().getName(), new HashMap<String, Object>());
+    	playerHashMap.get(event.getPlayer().getName()).put("joined", new Date().getTime());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
     	
-    	playerLoginTime.remove(event.getPlayer().getName());
+    	playerHashMap.remove(event.getPlayer().getName());
     }
 }
 

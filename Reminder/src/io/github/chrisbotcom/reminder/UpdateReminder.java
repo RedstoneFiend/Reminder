@@ -66,6 +66,7 @@ public class UpdateReminder implements Runnable {
 			downloadURL = (String) jsonObject.get("downloadUrl");
 			
 			// Simple version check. Return if no update pending
+			// TODO: Curse does not reliably update JSON query when version 1.1 approved. Need to use more sofisticated version checking.
 			version = fileName.split(" v")[1];
 			if (version.equalsIgnoreCase(reminder.getDescription().getVersion())) {
 				return;
