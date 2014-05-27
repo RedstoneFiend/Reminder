@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="io/github/chrisbotcom/.DS_Store" kind="src" path="src"/>
+	<classpathentry excluding="io/github/chrisbotcom/.DS_Store|net/gravitydevelopment/updater/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/chrisbot/Downloads/bukkit-1.7.2-R0.4-20140216.011848-2.jar">
 		<attributes>
