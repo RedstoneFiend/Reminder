@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
-
 package io.github.chrisbotcom.reminder.commands;
 
 import java.text.SimpleDateFormat;
@@ -28,19 +27,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class Resume {
-	public static boolean execute(Reminder plugin, CommandSender sender)
-	{
-		if (plugin.reminderTask == null
-				|| !plugin.getServer().getScheduler().isCurrentlyRunning(plugin.reminderTask.getTaskId())
-				|| !plugin.getServer().getScheduler().isQueued(plugin.reminderTask.getTaskId())) {
-			plugin.reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new ReminderTask(plugin), 300L, 300L);
-			
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			sender.sendMessage("Reminder resumed at " + simpleDateFormat.format(new Date()) + ".");
-		} else {
-			sender.sendMessage("Reminder is already running.");
-		}
-		
-		return true;
-	}
+
+    public static boolean execute(Reminder plugin, CommandSender sender) {
+        if (plugin.reminderTask == null
+                || !plugin.getServer().getScheduler().isCurrentlyRunning(plugin.reminderTask.getTaskId())
+                || !plugin.getServer().getScheduler().isQueued(plugin.reminderTask.getTaskId())) {
+            plugin.reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new ReminderTask(plugin), 300L, 300L);
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            sender.sendMessage("Reminder resumed at " + simpleDateFormat.format(new Date()) + ".");
+        } else {
+            sender.sendMessage("Reminder is already running.");
+        }
+
+        return true;
+    }
 }

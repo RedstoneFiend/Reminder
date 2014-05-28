@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
-
 package io.github.chrisbotcom.reminder;
 
 import java.io.IOException;
@@ -40,121 +39,121 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 public final class Reminder extends JavaPlugin implements Listener {
-	
-	public Connection db = null;
-	public FileConfiguration config = null;
-	public BukkitTask reminderTask;
-	public Map<String, Map<String, Object>> playerHashMap = new HashMap<String, Map<String, Object>>();
-	
-	@Override
-	public void onLoad() {
 
-	}
+    public Connection db = null;
+    public FileConfiguration config = null;
+    public BukkitTask reminderTask;
+    public Map<String, Map<String, Object>> playerHashMap = new HashMap<String, Map<String, Object>>();
 
-	@Override
-    public void onEnable() {
-		
-		// Load and update config.yml
-		this.config = this.getConfig();
-		this.config.options().copyDefaults(true);
-		this.saveConfig();		
-		
-		// Check for update if enabled and update if enabled
-/*		Curse breaks updater. Curse does not reliably update JSON query result when verison 1.1 is approved.
- * 		
- * 		if (config.getBoolean("checkUpdate")) {
-			Thread thread = new Thread(new UpdateReminder(this));
-	        thread.start();
-		}
-*/		
-		// Connect to database
-		try {
-			// Test for JDBC driver
-			Class.forName("com.mysql.jdbc.Driver");
-			// Open connection
-			this.db = DriverManager.getConnection(config.getString("dbUrl"), config.getString("dbUser"), config.getString("dbPassword"));
-		}
-		catch (ClassNotFoundException e) {
-            this.getLogger().log(Level.SEVERE, "JDBC Driver not found!");
-        }
-		catch (SQLException e) {
-			this.getLogger().log(Level.SEVERE, "Unable to open MySQL Connection!");
-		}
+    @Override
+    public void onLoad() {
 
-		// Verify table
-		if (this.db != null) {
-			try {
-				this.db.prepareStatement("SELECT COUNT(*) FROM reminders").execute();
-			} catch (SQLException e) {
-				// reminders table does not exist. Create it.
-				try {
-					InputStream inputStream = this.getClass().getResourceAsStream("/Resource/create_table.sql");
-					Scanner scanner = new Scanner(inputStream);
-					String createTableSql = scanner.useDelimiter("\\Z").next();
-					scanner.close();
-					inputStream.close();
-					this.db.prepareStatement(createTableSql).executeUpdate();
-					this.getLogger().info("Created table 'reminders'.");
-				} catch (IOException e1) {
-					this.getLogger().severe("Unable to open or close /Resource/create_table.sql!");
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					this.getLogger().severe("Unable to create table 'reminders'!");
-					e1.printStackTrace();
-				}
-			}
-		}
-		
-        // Set command executor
-		CommandExecutor commandExecutor = new CommandParser(this);
-		this.getCommand("reminder").setExecutor(commandExecutor);
-		
-		// Set player join listener
-		getServer().getPluginManager().registerEvents(this, this);
-		
-		// Start asynchronous reminderTask. Runs every taskRate seconds. 1 second = 20 ticks. Valid range 15 - 120.
-		Long taskRate = this.config.getLong("taskRate");
-		if (taskRate < 15L) taskRate = 15L;
-		if (taskRate > 120L) taskRate = 120L;
-		taskRate *= 20L;
-		if ((config.getBoolean("startOnLoad") == true) && (this.db != null)) {
-			reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), taskRate, taskRate);
-		}
     }
 
-	@Override
-    public void onDisable() {
-    	
-    	// Stop asynchronous reminderTask
-		if (this.reminderTask != null &&
-				(this.getServer().getScheduler().isCurrentlyRunning(this.reminderTask.getTaskId())
-				|| this.getServer().getScheduler().isQueued(this.reminderTask.getTaskId()))) {
-			this.getServer().getScheduler().cancelTask(this.reminderTask.getTaskId());
-		}
+    @Override
+    public void onEnable() {
 
-    	// Close database connection.
-		if (this.db != null) {
-	    	try {
-				db.close();
-			} catch (SQLException e) {
-				this.getLogger().severe("Unable to close MySQL Connection!");
-				e.printStackTrace();
-			}
-		}
-   }
-    
+        // Load and update config.yml
+        this.config = this.getConfig();
+        this.config.options().copyDefaults(true);
+        this.saveConfig();
+
+		// Check for update if enabled and update if enabled
+/*		Curse breaks updater. Curse does not reliably update JSON query result when verison 1.1 is approved.
+         * 		
+         * 		if (config.getBoolean("checkUpdate")) {
+         Thread thread = new Thread(new UpdateReminder(this));
+         thread.start();
+         }
+         */
+        // Connect to database
+        try {
+            // Test for JDBC driver
+            Class.forName("com.mysql.jdbc.Driver");
+            // Open connection
+            this.db = DriverManager.getConnection(config.getString("dbUrl"), config.getString("dbUser"), config.getString("dbPassword"));
+        } catch (ClassNotFoundException e) {
+            this.getLogger().log(Level.SEVERE, "JDBC Driver not found!");
+        } catch (SQLException e) {
+            this.getLogger().log(Level.SEVERE, "Unable to open MySQL Connection!");
+        }
+
+        // Verify table
+        if (this.db != null) {
+            try {
+                this.db.prepareStatement("SELECT COUNT(*) FROM reminders").execute();
+            } catch (SQLException e) {
+                // reminders table does not exist. Create it.
+                try {
+                    InputStream inputStream = this.getClass().getResourceAsStream("/Resource/create_table.sql");
+                    Scanner scanner = new Scanner(inputStream);
+                    String createTableSql = scanner.useDelimiter("\\Z").next();
+                    scanner.close();
+                    inputStream.close();
+                    this.db.prepareStatement(createTableSql).executeUpdate();
+                    this.getLogger().info("Created table 'reminders'.");
+                } catch (IOException e1) {
+                    this.getLogger().severe("Unable to open or close /Resource/create_table.sql!");
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    this.getLogger().severe("Unable to create table 'reminders'!");
+                    e1.printStackTrace();
+                }
+            }
+        }
+
+        // Set command executor
+        CommandExecutor commandExecutor = new CommandParser(this);
+        this.getCommand("reminder").setExecutor(commandExecutor);
+
+        // Set player join listener
+        getServer().getPluginManager().registerEvents(this, this);
+
+        // Start asynchronous reminderTask. Runs every taskRate seconds. 1 second = 20 ticks. Valid range 15 - 120.
+        Long taskRate = this.config.getLong("taskRate");
+        if (taskRate < 15L) {
+            taskRate = 15L;
+        }
+        if (taskRate > 120L) {
+            taskRate = 120L;
+        }
+        taskRate *= 20L;
+        if ((config.getBoolean("startOnLoad") == true) && (this.db != null)) {
+            reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), taskRate, taskRate);
+        }
+    }
+
+    @Override
+    public void onDisable() {
+
+        // Stop asynchronous reminderTask
+        if (this.reminderTask != null
+                && (this.getServer().getScheduler().isCurrentlyRunning(this.reminderTask.getTaskId())
+                || this.getServer().getScheduler().isQueued(this.reminderTask.getTaskId()))) {
+            this.getServer().getScheduler().cancelTask(this.reminderTask.getTaskId());
+        }
+
+        // Close database connection.
+        if (this.db != null) {
+            try {
+                db.close();
+            } catch (SQLException e) {
+                this.getLogger().severe("Unable to close MySQL Connection!");
+                e.printStackTrace();
+            }
+        }
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-    	
-    	playerHashMap.put(event.getPlayer().getName(), new HashMap<String, Object>());
-    	playerHashMap.get(event.getPlayer().getName()).put("joined", new Date().getTime());
+
+        playerHashMap.put(event.getPlayer().getName(), new HashMap<String, Object>());
+        playerHashMap.get(event.getPlayer().getName()).put("joined", new Date().getTime());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-    	
-    	playerHashMap.remove(event.getPlayer().getName());
+
+        playerHashMap.remove(event.getPlayer().getName());
     }
 }
-
-

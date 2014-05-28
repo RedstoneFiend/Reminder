@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
-
 package io.github.chrisbotcom.reminder.commands;
 
 import io.github.chrisbotcom.reminder.Reminder;
@@ -25,58 +24,50 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class Setdefault {
-	
-	public static boolean execute(Reminder plugin, CommandSender sender, ReminderRecord reminder) throws Exception
-	{
-		String returnMessage = null;
-		String errorMessage = null;
 
-		// Setable defaults
-		if (reminder.getDelay() != null)
-		{
-			plugin.getConfig().set("delay", reminder.getDelay());
-			returnMessage = "delay";
-		}
-		if (reminder.getRate() != null)
-		{
-			plugin.getConfig().set("rate", reminder.getRate());
-			returnMessage = returnMessage == null ? "rate" : ", rate";
-		}
-		if (reminder.getEcho() != null)
-		{
-			plugin.getConfig().set("echo", reminder.getEcho());
-			returnMessage = returnMessage == null ? "echo" : ", echo";
-		}
-		if (reminder.getTag() != null)
-		{
-			plugin.getConfig().set("tag", reminder.getTag());
-			returnMessage = returnMessage == null ? "tag" : ", tag";
-		}
-		
-		// Non-setable defaults
-		if (reminder.getId() != null)
-		{
-			errorMessage = "id";
-		}
-		if (reminder.getMessage() != null)
-		{
-			errorMessage = errorMessage == null ? "message" : ", message";
-		}
-		if (reminder.getPlayer() != null)
-		{
-			errorMessage = errorMessage == null ? "player" : ", player";
-		}
+    public static boolean execute(Reminder plugin, CommandSender sender, ReminderRecord reminder) throws Exception {
+        String returnMessage = null;
+        String errorMessage = null;
 
-		if (returnMessage != null)
-		{
-			plugin.saveConfig();
-			sender.sendMessage(ChatColor.GREEN + "Default value(s) set for " + returnMessage + "." );
-		}
-		if (errorMessage != null)
-			sender.sendMessage(ChatColor.RED + "These parameter were specified but were not set: " + errorMessage);
-		
-		sender.sendMessage(ChatColor.WHITE + String.format("Current setting(s): tag='%s', delay=%s, rate=%s, echo=%s: ", 
-				plugin.getConfig().get("tag"), plugin.getConfig().get("delay"), plugin.getConfig().get("rate"), plugin.getConfig().get("echo")));
-		return true;
-	}
+        // Setable defaults
+        if (reminder.getDelay() != null) {
+            plugin.getConfig().set("delay", reminder.getDelay());
+            returnMessage = "delay";
+        }
+        if (reminder.getRate() != null) {
+            plugin.getConfig().set("rate", reminder.getRate());
+            returnMessage = returnMessage == null ? "rate" : ", rate";
+        }
+        if (reminder.getEcho() != null) {
+            plugin.getConfig().set("echo", reminder.getEcho());
+            returnMessage = returnMessage == null ? "echo" : ", echo";
+        }
+        if (reminder.getTag() != null) {
+            plugin.getConfig().set("tag", reminder.getTag());
+            returnMessage = returnMessage == null ? "tag" : ", tag";
+        }
+
+        // Non-setable defaults
+        if (reminder.getId() != null) {
+            errorMessage = "id";
+        }
+        if (reminder.getMessage() != null) {
+            errorMessage = errorMessage == null ? "message" : ", message";
+        }
+        if (reminder.getPlayer() != null) {
+            errorMessage = errorMessage == null ? "player" : ", player";
+        }
+
+        if (returnMessage != null) {
+            plugin.saveConfig();
+            sender.sendMessage(ChatColor.GREEN + "Default value(s) set for " + returnMessage + ".");
+        }
+        if (errorMessage != null) {
+            sender.sendMessage(ChatColor.RED + "These parameter were specified but were not set: " + errorMessage);
+        }
+
+        sender.sendMessage(ChatColor.WHITE + String.format("Current setting(s): tag='%s', delay=%s, rate=%s, echo=%s: ",
+                plugin.getConfig().get("tag"), plugin.getConfig().get("delay"), plugin.getConfig().get("rate"), plugin.getConfig().get("echo")));
+        return true;
+    }
 }

@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
-
 package io.github.chrisbotcom.reminder.commands;
 
 import java.text.SimpleDateFormat;
@@ -24,11 +23,11 @@ import java.util.Date;
 import org.bukkit.command.CommandSender;
 
 public class Time {
-	public static boolean execute(CommandSender sender)
-	{
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		sender.sendMessage("Server time: " + simpleDateFormat.format(new Date()));
-		
-		return true;
-	}
+
+    public static boolean execute(CommandSender sender) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        sender.sendMessage("Server time: " + simpleDateFormat.format(new Date()));
+
+        return true;
+    }
 }

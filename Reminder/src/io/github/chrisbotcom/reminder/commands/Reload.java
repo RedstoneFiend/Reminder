@@ -15,16 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
-
 package io.github.chrisbotcom.reminder.commands;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Reload {
-	public static boolean execute(JavaPlugin plugin) throws Exception 
-	{
-		plugin.reloadConfig();
-		
-		return true;
-	}
+
+    public static boolean execute(JavaPlugin plugin) throws Exception {
+        plugin.reloadConfig();
+
+        return true;
+    }
 }

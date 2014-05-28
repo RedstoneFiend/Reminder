@@ -15,32 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
  */
-
 package io.github.chrisbotcom.reminder;
 
-public class ReminderException extends Exception 
-{
+public class ReminderException extends Exception {
+
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public ReminderException ()
-        {
-        }
+    public ReminderException() {
+    }
 
-    public ReminderException (String message)
-        {
-        super (message);
-        }
+    public ReminderException(String message) {
+        super(message);
+    }
 
-    public ReminderException (Throwable cause)
-        {
-        super (cause);
-        }
+    public ReminderException(Throwable cause) {
+        super(cause);
+    }
 
-    public ReminderException (String message, Throwable cause)
-        {
-        super (message, cause);
-        }
+    public ReminderException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
