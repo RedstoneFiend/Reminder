@@ -46,7 +46,7 @@ public class Add {
         }
         if (reminder.getStart() == null) {
             reminder.setStart(new Date().getTime());
-        };
+        }
 
         String sql = "INSERT INTO reminders (player, message, start, last, tag, rate, delay, echo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = plugin.db.prepareStatement(sql);

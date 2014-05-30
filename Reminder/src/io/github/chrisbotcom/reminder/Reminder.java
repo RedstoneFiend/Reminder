@@ -27,10 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -43,7 +43,7 @@ public final class Reminder extends JavaPlugin implements Listener {
     public Connection db = null;
     public FileConfiguration config = null;
     public BukkitTask reminderTask;
-    public Map<String, Map<String, Object>> playerHashMap = new HashMap<String, Map<String, Object>>();
+    public Map<String, Map<String, Object>> playerHashMap = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -58,14 +58,6 @@ public final class Reminder extends JavaPlugin implements Listener {
         this.config.options().copyDefaults(true);
         this.saveConfig();
 
-		// Check for update if enabled and update if enabled
-/*		Curse breaks updater. Curse does not reliably update JSON query result when verison 1.1 is approved.
-         * 		
-         * 		if (config.getBoolean("checkUpdate")) {
-         Thread thread = new Thread(new UpdateReminder(this));
-         thread.start();
-         }
-         */
         // Connect to database
         try {
             // Test for JDBC driver
@@ -85,8 +77,10 @@ public final class Reminder extends JavaPlugin implements Listener {
             } catch (SQLException e) {
                 // reminders table does not exist. Create it.
                 try {
-                    InputStream inputStream = this.getClass().getResourceAsStream("/Resource/create_table.sql");
-                    Scanner scanner = new Scanner(inputStream);
+                    InputStream inputStream;
+                    inputStream = this.getClass().getResourceAsStream("/Resource/create_table.sql");
+                    Scanner scanner;
+                    scanner = new Scanner(inputStream);
                     String createTableSql = scanner.useDelimiter("\\Z").next();
                     scanner.close();
                     inputStream.close();
@@ -94,10 +88,10 @@ public final class Reminder extends JavaPlugin implements Listener {
                     this.getLogger().info("Created table 'reminders'.");
                 } catch (IOException e1) {
                     this.getLogger().severe("Unable to open or close /Resource/create_table.sql!");
-                    e1.printStackTrace();
+                    this.getLogger().log(Level.SEVERE, e1.toString());
                 } catch (SQLException e1) {
                     this.getLogger().severe("Unable to create table 'reminders'!");
-                    e1.printStackTrace();
+                    this.getLogger().log(Level.SEVERE, e1.toString());
                 }
             }
         }
@@ -109,6 +103,13 @@ public final class Reminder extends JavaPlugin implements Listener {
         // Set player join listener
         getServer().getPluginManager().registerEvents(this, this);
 
+        // Register existing players
+        for (Player player : this.getServer().getOnlinePlayers()) {
+            
+            playerHashMap.put(player.getName(), new HashMap<String, Object>());
+            playerHashMap.get(player.getName()).put("joined", new Date().getTime());
+        }
+        
         // Start asynchronous reminderTask. Runs every taskRate seconds. 1 second = 20 ticks. Valid range 15 - 120.
         Long taskRate = this.config.getLong("taskRate");
         if (taskRate < 15L) {
@@ -120,6 +121,11 @@ public final class Reminder extends JavaPlugin implements Listener {
         taskRate *= 20L;
         if ((config.getBoolean("startOnLoad") == true) && (this.db != null)) {
             reminderTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ReminderTask(this), taskRate, taskRate);
+        }
+        
+        if (!config.getBoolean("startOnLoad")) {
+            
+            this.getLogger().log(Level.WARNING, "startOnLoad in config.yml set to false. Reminder will not process until set to true.");
         }
     }
 
@@ -139,7 +145,7 @@ public final class Reminder extends JavaPlugin implements Listener {
                 db.close();
             } catch (SQLException e) {
                 this.getLogger().severe("Unable to close MySQL Connection!");
-                e.printStackTrace();
+                this.getLogger().log(Level.SEVERE, e.toString());
             }
         }
     }

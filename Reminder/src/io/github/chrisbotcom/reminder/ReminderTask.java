@@ -21,12 +21,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
+import java.util.logging.Level;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -51,15 +54,15 @@ public class ReminderTask implements Runnable {
         }
 
         messageFlipFlop = !messageFlipFlop;
-        Player[] players = getPlayers(); // Get player list
         long now = new Date().getTime(); // get the current (long) date
         Connection db = getDb();
 
         if (messageFlipFlop) { // Send broadcast message.
 
-            try {
+            try {                
                 // select message for all players (*)
-                String sql = "SELECT * FROM reminders WHERE (player = '*') AND (echo <> 0) AND "
+                
+                String sql = "SELECT * FROM reminders WHERE (player LIKE '*%') AND (echo <> 0) AND "
                         + "(start <= ?) AND ((last + (rate * 60000)) <= ?) ORDER BY last, start LIMIT 1";
                 PreparedStatement preparedStatement = db.prepareStatement(sql);
                 preparedStatement.setLong(1, now);
@@ -72,27 +75,50 @@ public class ReminderTask implements Runnable {
                     String message = resultSet.getString("message").replace('&', '\u00A7');
                     int delay = resultSet.getInt("delay");
                     int echo = resultSet.getInt("echo");
-
-                    for (Player player : players) {
-
-                        Map<String, Object> playerHashMap = getPlayerHashMap(player.getName());
-                        Long playerLoginTime = (Long) playerHashMap.get("joined");
-                        Integer playerEcho = (Integer) playerHashMap.get(id.toString());
-                        if (playerEcho == null) {
-                            playerEcho = echo;
+                    String player = resultSet.getString("player");
+                    String[] worlds;
+                    
+                    if (player.equals("*")) {
+                        
+                        List<World> ww = plugin.getServer().getWorlds();
+                        worlds = new String[ww.size()];
+                        
+                        for (int i = 0; i < ww.size(); i++) {
+                            
+                            worlds[i] = ww.get(i).getName();
                         }
+                    }
+                    else {
+                        
+                        worlds = player.substring(1).split(",");
+                    }
+                        
+                    for (String world : worlds) {
 
-                        if ((now >= (playerLoginTime + (delay * 60000))) && (playerEcho != 0)) {
+                        List<Player> players = this.getPlayersInWorld(world.trim());
 
-							// If player does not already have a reference to this message, add it.
-                            player.sendMessage(message);
+                        if (players != null) {
+                            for (Player p : players) {
 
-                            if (echo > 0) {
-                                playerHashMap.put(id.toString(), playerEcho - 1);
-                                putPlayerHashMap(player.getName(), playerHashMap);
+                                Map<String, Object> playerHashMap = getPlayerHashMap(p.getName());
+                                Long playerLoginTime = (Long) playerHashMap.get("joined");
+                                Integer playerEcho = (Integer) playerHashMap.get(id.toString());
+                                if (playerEcho == null) {
+                                    playerEcho = echo;
+                                }
+
+                                if ((now >= (playerLoginTime + (delay * 60000))) && (playerEcho != 0)) {
+
+                                    // If player does not already have a reference to this message, add it.
+                                    p.sendMessage(message);
+
+                                    if (echo > 0) {
+                                        playerHashMap.put(id.toString(), playerEcho - 1);
+                                        putPlayerHashMap(p.getName(), playerHashMap);
+                                    }
+                                }
                             }
                         }
-
                     }
 
                     // update broadcast set last to now
@@ -103,11 +129,13 @@ public class ReminderTask implements Runnable {
                     preparedStatement.executeUpdate();
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, e.toString());
             }
 
         } else { // Send player specific message.
 
+            Player[] players = this.getPlayers();
+            
             for (Player player : players) {
 
                 Long playerLoginTime = (Long) getPlayerHashMap(player.getName()).get("joined");
@@ -143,9 +171,8 @@ public class ReminderTask implements Runnable {
                         preparedStatement.executeUpdate();
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    plugin.getLogger().log(Level.SEVERE, e.toString());
                 }
-
             }
         }
 
@@ -153,57 +180,121 @@ public class ReminderTask implements Runnable {
     }
 
     private Player[] getPlayers() {
+        
         Player[] players = null;
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
+        
         try {
-            players = scheduler.callSyncMethod(plugin,
-                    new Callable<Player[]>() {
-                        public Player[] call() {
-                            return plugin.getServer().getOnlinePlayers();
-                        }
-                    }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            
+            players = scheduler.callSyncMethod(plugin, new Callable<Player[]>() {
+                
+                @Override
+                public Player[] call() {
+                    return plugin.getServer().getOnlinePlayers();
+                }
+            }).get();
+        } 
+        catch (InterruptedException | ExecutionException e) {
+            
+            plugin.getLogger().log(Level.SEVERE, e.toString());
         }
+        
+        return players;
+    }
+
+    private List<Player> getPlayersInWorld(final String world) {
+        
+        List<Player> players = null;
+        BukkitScheduler scheduler = plugin.getServer().getScheduler();
+        
+        try {
+            
+            players = scheduler.callSyncMethod(plugin, new Callable<List<Player>>() {
+                @Override
+                public List<Player> call() {
+                    
+                    List<Player> players = new ArrayList<>();
+                    
+                    if (world.endsWith("*")) {
+                        
+                        String prefix = world.substring(0, world.length() - 2);
+                        List<World> worlds = plugin.getServer().getWorlds();
+                    
+                        for (World w : worlds) {
+                        
+                            if (w.getName().startsWith(prefix)) {
+                                
+                                players.addAll(w.getPlayers());
+                            }
+                        }
+                    }
+                    else {
+                        
+                        players.addAll(plugin.getServer().getWorld(world).getPlayers());
+                    }
+                    
+                    return players;
+                }
+            }).get();
+        } 
+        catch (InterruptedException | ExecutionException e) {
+            
+            plugin.getLogger().log(Level.SEVERE, e.toString());
+        }
+        
         return players;
     }
 
     private Connection getDb() {
+        
         Connection db = null;
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
+        
         try {
+            
             db = scheduler.callSyncMethod(plugin, new Callable<Connection>() {
+                
+                @Override
                 public Connection call() {
                     return plugin.db;
                 }
             }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        } 
+        catch (InterruptedException | ExecutionException e) {
+            
+            plugin.getLogger().log(Level.SEVERE, e.toString());
         }
         return db;
     }
 
     private Map<String, Object> getPlayerHashMap(final String playerName) {
 
-        Map<String, Object> playerBroadcastHashMap = new HashMap<String, Object>();
+        Map<String, Object> playerBroadcastHashMap = new HashMap<>();
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
 
         try {
-            playerBroadcastHashMap = scheduler.callSyncMethod(plugin,
-                    new Callable<Map<String, Object>>() {
-                        public Map<String, Object> call() {
-                            Map<String, Object> playerBroadcastHashMap = (Map<String, Object>) plugin.playerHashMap.get(playerName);
-                            if (playerBroadcastHashMap == null) {
-                                // plugin.getLogger().info(playerName);
-                                Long playerLoginTime = new Date().getTime();
-                                plugin.playerHashMap.put(playerName, new HashMap<String, Object>());
-                                plugin.playerHashMap.get(playerName).put("joined", playerLoginTime);
-                            }
-                            return playerBroadcastHashMap;
-                        }
-                    }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            
+            playerBroadcastHashMap = scheduler.callSyncMethod(plugin, new Callable<Map<String, Object>>() {
+                
+                @Override
+                public Map<String, Object> call() {
+                    
+                    Map<String, Object> playerBroadcastHashMap = (Map<String, Object>) plugin.playerHashMap.get(playerName);
+                    
+                    if (playerBroadcastHashMap == null) {
+                        
+                        // plugin.getLogger().info(playerName);
+                        Long playerLoginTime = new Date().getTime();
+                        plugin.playerHashMap.put(playerName, new HashMap<String, Object>());
+                        plugin.playerHashMap.get(playerName).put("joined", playerLoginTime);
+                    }
+                    return playerBroadcastHashMap;
+                }
+            }).get();
+        } 
+        catch (InterruptedException | ExecutionException e) {
+            
+            plugin.getLogger().log(Level.SEVERE, e.toString());
         }
         return playerBroadcastHashMap;
     }
@@ -214,7 +305,9 @@ public class ReminderTask implements Runnable {
 
         Runnable task = new Runnable() {
 
+            @Override
             public void run() {
+                
                 plugin.playerHashMap.get(playerName).putAll(playerHashMap);
             }
         };

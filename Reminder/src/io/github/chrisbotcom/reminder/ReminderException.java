@@ -19,9 +19,6 @@ package io.github.chrisbotcom.reminder;
 
 public class ReminderException extends Exception {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public ReminderException() {

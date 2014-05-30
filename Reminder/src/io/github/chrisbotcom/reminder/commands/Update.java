@@ -40,7 +40,7 @@ public class Update {
             throw new ReminderException("Must supply either id or player and/or tag.");
         }
 
-        List<String> setClauses = new ArrayList<String>();
+        List<String> setClauses = new ArrayList<>();
 
 		// "rate", "echo", 
         // TODO Consider making <player> and <tag> updatable.

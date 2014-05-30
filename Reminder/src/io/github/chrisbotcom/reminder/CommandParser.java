@@ -18,6 +18,7 @@
 package io.github.chrisbotcom.reminder;
 
 import io.github.chrisbotcom.reminder.commands.*;
+import java.util.logging.Level;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +31,8 @@ import org.bukkit.ChatColor;
 
 public class CommandParser implements CommandExecutor {
 
-    private Reminder plugin;
-    private Pattern pattern;
+    private final Reminder plugin;
+    private final Pattern pattern;
 
     public CommandParser(Reminder plugin) {
 
@@ -58,7 +59,7 @@ public class CommandParser implements CommandExecutor {
             return false;
         }
 
-        String commandLine = "";
+        String commandLine;
 
         // Concatenate args.
         if (args.length > 0) {
@@ -146,8 +147,7 @@ public class CommandParser implements CommandExecutor {
         } catch (ReminderException e) {
             sender.sendMessage(ChatColor.RED + e.getMessage());
         } catch (Exception e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, e.getMessage());
         }
 
         return false;
